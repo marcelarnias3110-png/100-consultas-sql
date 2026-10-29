@@ -20,17 +20,54 @@ FROM
     group by actor_id
     having count(distinct film_id) > 20;
 -- 3:  Para cada idioma, indica cuántas películas están catalogadas en ese idioma.
-select language.name
+select language.name as idioma
 from
 language
-count();
+group  by language
+having count(languages);
 
 
 -- 4:  Muestra el promedio de duración (length) de las películas por idioma y filtra aquellos idiomas con duración media estrictamente mayor a 110 minutos.
+SELECT 
+    AVG(film.length) as duracion , language_id, name
+FROM
+    language
+        JOIN
+    film USING (language_id)
+GROUP BY language_id
+HAVING AVG(length) > 110;
 -- 5:  Para cada película, muestra cuántas copias hay en el inventario.
+SELECT 
+    title AS titulo,
+    COUNT(inventory.film_id) AS numero_de_peliculas
+FROM
+    film
+        JOIN
+    inventory USING (film_id)
+GROUP BY inventory.film_id;
 -- 6:  Lista solo las películas que tienen al menos 5 copias en inventario.
+SELECT 
+    title AS nombre,
+    COUNT(inventory.film_id) AS numero_de_pelicula
+FROM
+    inventory
+        JOIN
+    film USING (film_id)
+GROUP BY title
+HAVING COUNT(inventory.film_id) > 5;
+
 -- 7:  Para cada artículo de inventario, cuenta cuántos alquileres se han realizado.
+SELECT 
+    inventory_id, COUNT(rental_id)
+FROM
+    inventory
+        JOIN
+    rental USING (inventory_id)
+GROUP BY inventory_id;
 -- 8:  Para cada cliente, muestra cuántos alquileres ha realizado en total.
+select concat(first_name, '', last_name) as nombre, customer_id, count(rental_id) as alquiler
+from customer join rental using (customer_id)
+group by customer_id;
 -- 9:  Lista los clientes con 30 o más alquileres acumulados.
 -- 10:  Para cada cliente, muestra el total de pagos (suma en euros/dólares) que ha realizado.
 -- 11:  Muestra los clientes cuyo importe total pagado es al menos 200.
