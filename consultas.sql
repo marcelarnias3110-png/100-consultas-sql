@@ -1,4 +1,3 @@
-use sakila;
 -- ==============================================
 -- SECCIÓN A) 30 CONSULTAS CON JOIN DE 2 TABLAS
 -- ==============================================
@@ -10,8 +9,9 @@ FROM
     join film_actor using (actor_id)
     group by actor_id;
 
-    
+
 -- 2:  Lista solo los actores que participan en 20 o más películas (umbral alto) con su conteo.
+
 SELECT 
 actor_id, count(distinct film_id) as numero_de_peliculas
 FROM
@@ -19,15 +19,18 @@ FROM
     join film_actor using (actor_id)
     group by actor_id
     having count(distinct film_id) > 20;
--- 3:  Para cada idioma, indica cuántas películas están catalogadas en ese idioma.
-select language.name as idioma
-from
-language
-group  by language
-having count(languages);
 
+-- 3:  Para cada idioma, indica cuántas películas están catalogadas en ese idioma.
+
+SELECT 
+    language.name AS idioma
+FROM
+    language
+GROUP BY language
+HAVING COUNT(languages);
 
 -- 4:  Muestra el promedio de duración (length) de las películas por idioma y filtra aquellos idiomas con duración media estrictamente mayor a 110 minutos.
+
 SELECT 
     AVG(film.length) as duracion , language_id, name
 FROM
@@ -36,7 +39,9 @@ FROM
     film USING (language_id)
 GROUP BY language_id
 HAVING AVG(length) > 110;
+
 -- 5:  Para cada película, muestra cuántas copias hay en el inventario.
+
 SELECT 
     title AS titulo,
     COUNT(inventory.film_id) AS numero_de_peliculas
@@ -45,7 +50,9 @@ FROM
         JOIN
     inventory USING (film_id)
 GROUP BY inventory.film_id;
+
 -- 6:  Lista solo las películas que tienen al menos 5 copias en inventario.
+
 SELECT 
     title AS nombre,
     COUNT(inventory.film_id) AS numero_de_pelicula
@@ -57,6 +64,7 @@ GROUP BY title
 HAVING COUNT(inventory.film_id) > 5;
 
 -- 7:  Para cada artículo de inventario, cuenta cuántos alquileres se han realizado.
+
 SELECT 
     inventory_id, COUNT(rental_id)
 FROM
@@ -64,13 +72,52 @@ FROM
         JOIN
     rental USING (inventory_id)
 GROUP BY inventory_id;
+
 -- 8:  Para cada cliente, muestra cuántos alquileres ha realizado en total.
-select concat(first_name, '', last_name) as nombre, customer_id, count(rental_id) as alquiler
-from customer join rental using (customer_id)
-group by customer_id;
+
+SELECT 
+    CONCAT(first_name, '', last_name) AS nombre,
+    customer_id,
+    COUNT(rental_id) AS alquiler
+FROM
+    customer
+        JOIN
+    rental USING (customer_id)
+GROUP BY customer_id;
+
 -- 9:  Lista los clientes con 30 o más alquileres acumulados.
+
+SELECT 
+    customer_id AS id_cliente, COUNT(rental_id) AS alquileres
+FROM
+    customer
+        JOIN
+    rental USING (customer_id)
+GROUP BY customer_id
+HAVING COUNT(rental_id) > 30;
+
 -- 10:  Para cada cliente, muestra el total de pagos (suma en euros/dólares) que ha realizado.
+
+SELECT 
+    customer_id AS id_cliente, SUM(amount) as total_pagos
+FROM
+    customer
+        JOIN
+    payment USING (customer_id)
+group BY customer_id
+order by sum(amount);
+
 -- 11:  Muestra los clientes cuyo importe total pagado es al menos 200.
+
+SELECT 
+customer.customer_id AS id_cliente, COUNT(amount) AS total_pagado
+FROM
+    payment
+        JOIN
+    customer USING (customer_id)
+GROUP BY customer.customer_id
+having total_pagado < 200;
+
 -- 12:  Para cada empleado (staff), muestra el número de pagos que ha procesado.
 -- 13:  Para cada empleado, muestra el importe total procesado.
 -- 14:  Para cada tienda, cuenta cuántos artículos de inventario tiene.
