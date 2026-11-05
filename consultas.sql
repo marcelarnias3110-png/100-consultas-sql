@@ -240,7 +240,7 @@ GROUP BY film_id;
 -- 24:  Para cada cliente, cuenta cuántos pagos ha realizado en 2005 (usando el año de payment_date).
 
 SELECT 
-    COUNT(payment_date) as pagos_realizados, customer_id, first_name, las t_name
+    COUNT(payment_date) as pagos_realizados, customer_id, first_name, last_name
 FROM
     customer
         JOIN
@@ -350,7 +350,11 @@ FROM
     having (count(film_id)) > 15;
     
     
+
       -- 32:  Para cada categoría (por nombre), cuenta cuántas películas hay en esa categoría.
+
+    -- 32:  Para cada categoría (por nombre), cuenta cuántas películas hay en esa categoría.
+
     
     SELECT 
     title AS titulo, COUNT(film_id), category_id AS categoria
@@ -483,6 +487,7 @@ FROM
     where dayofweek(rental_date) = 1 or dayofweek(rental_date) = 7
 GROUP BY customer_id , first_name , last_name;
 
+
 select *  from customer join rental using (customer_id) join payment using (rental_id)  ;
 -- 42:  Para cada actor, muestra el total de títulos distintos en los que participa (equivale a COUNT DISTINCT, sin subconsulta).
 
@@ -567,6 +572,13 @@ GROUP BY store_id;
 
 
 
+
+select *  from customer join rental using (customer_id) join payment using (rental_id) ;
+-- 42:  Para cada actor, muestra el total de títulos distintos en los que participa (equivale a COUNT DISTINCT, sin subconsulta).
+-- 43:  Para cada ciudad, cuenta cuántos clientes residen ahí (customer -> address -> city).
+-- 44:  Para cada categoría, muestra cuántos actores distintos participan en películas de esa categoría.
+-- 45:  Para cada tienda, cuenta cuántas copias totales (inventario) tiene de películas en 2006.
+
 -- 46:  Para cada cliente, suma el total pagado por alquileres cuyo empleado pertenece a la tienda 1.
 -- 47:  Para cada película, cuenta cuántos actores tienen el apellido de longitud >= 5.
 -- 48:  Para cada categoría, suma la duración total (length) de sus películas.
@@ -628,8 +640,12 @@ GROUP BY store_id;
 -- 98:  Para cada cliente, cuenta cuántos días han pasado entre su primer y su último alquiler en 2005 (diferencia de fechas), mostrando solo clientes con >= 5 alquileres en 2005.
 --     (Se evita subconsulta calculando sobre el conjunto agrupado por cliente y usando MIN/MAX de rental_date en 2005).
 -- 99:  Para cada tienda, muestra la media de importes cobrados por transacción en el año 2006, con dos decimales.
+
 -- 100:  Para cada categoría, calcula la media de duración (length) de películas alquiladas en 2006 y ordénalas descendentemente por dicha media.
 
 select category_id, avg(length)from film_category join film using(film_id) where release_year = 2006 group by category_id order by (length) desc;
 
 select * from film_category join film  using (film_id)
+
+-- 100:  Para cada categoría, calcula la media de duración (length) de películas alquiladas en 2006 y ordénalas descendentemente por d
+
