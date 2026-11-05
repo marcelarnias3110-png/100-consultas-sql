@@ -1,3 +1,4 @@
+use sakila;
 -- ==============================================
 -- SECCIÓN A) 30 CONSULTAS CON JOIN DE 2 TABLAS
 -- ==============================================
@@ -215,20 +216,124 @@ GROUP BY country_id;
 
 -- 22:  Para cada idioma, calcula la duración media de películas y muestra solo los idiomas con media entre 90 y 120 inclusive.
 
-
-
+select language_id as idioma_peliculas, avg(length) from film join language using (language_id) where length > 90 group by language_id ;
+select length, language_id from film join language using (language_id) where length > 90 < 120;
+SELECt
+   language_id AS idioma_peliculas,
+    AVG(length) AS duracion_media
+FROM film
+JOIN language USING (language_id)
+GROUP BY language_id
+HAVING AVG(length) BETWEEN 90 AND 120;
 -- 23:  Para cada película, cuenta el número de alquileres que se han hecho de cualquiera de sus copias (usando inventario).
+
+SELECT 
+    film.title,
+    film_id,
+    COUNT(rental_duration) AS numero_alquileres
+FROM
+    film
+        JOIN
+    inventory USING (film_id)
+GROUP BY film_id;
+
 -- 24:  Para cada cliente, cuenta cuántos pagos ha realizado en 2005 (usando el año de payment_date).
+
+SELECT 
+    COUNT(payment_date) as pagos_realizados, customer_id, first_name, las t_name
+FROM
+    customer
+        JOIN
+    payment USING (customer_id)
+    where year(payment_date) = 2005
+    group by customer_id,first_name,last_name
+    ;
+
 -- 25:  Para cada película, muestra el promedio de tarifa de alquiler (rental_rate) de las copias existentes (es un promedio redundante pero válido).
+
+SELECT 
+    film_id,film.title, AVG(rental_rate)
+FROM
+    film
+        JOIN
+    inventory USING (film_id)
+GROUP BY film.title, film_id;
+
+
+
+select * from film join inventory using (film_id);
 -- 26:  Para cada actor, muestra la duración media (length) de sus películas.
+
+select  actor_id, avg(length) from actor join film_actor using (actor_id) group by actor_id;
+select film.title, actor_id, avg(length) from film join film_actor using (film_id)group by actor_id,film.title ;
 -- 27:  Para cada ciudad, cuenta cuántos clientes hay (usando la relación cliente->address->city requiere 3 tablas; aquí contamos direcciones por ciudad).
+
+SELECT 
+    first_name, last_name, city_id, COUNT(customer_id)
+FROM
+    customer
+        JOIN
+    address USING (address_id)
+        JOIN
+    city USING (city_id)
+GROUP BY city_id;
+
+SELECT 
+    city_id, 
+    -- Si tienes la tabla city con el nombre de la ciudad, puedes incluir city.city aquí
+    COUNT(customer_id) AS total_clientes
+FROM 
+    customer
+JOIN 
+    address USING (address_id)
+JOIN 
+    city USING (city_id)
+GROUP BY 
+    city_id;
+
+
+select *   from customer join address using (address_id) join city using (city_id);
 -- 28:  Para cada película, cuenta cuántos actores tiene asociados.
+
+SELECT 
+    film_id,
+    title,
+    COUNT(actor_id) AS total_actores
+FROM 
+    film
+JOIN 
+    film_actor USING (film_id)
+GROUP BY 
+    film_id, title;
+
+
 -- 29:  Para cada categoría (por id), cuenta cuántas películas pertenecen a ella (sin nombre de categoría para mantener 2 tablas).
+
+
+SELECT 
+    category_id,
+    COUNT(film_id) AS total_peliculas
+FROM 
+    film_category
+GROUP BY 
+    category_id;
 -- 30:  Para cada tienda, cuenta cuántos alquileres totales se originan en su inventario.
+
+SELECT 
+    store_id,
+    COUNT(rental_id) AS total_alquileres
+FROM 
+    inventory
+JOIN 
+    rental USING (inventory_id)
+GROUP BY 
+    store_id;
+
 -- ==============================================
 -- SECCIÓN B) 30 CONSULTAS CON JOIN DE 3 TABLAS
 -- ==============================================
 -- 31:  Para cada actor, cuenta cuántas películas tiene y muestra solo los que superan 15 películas.
+
 
 SELECT 
     first_name,
