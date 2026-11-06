@@ -350,7 +350,11 @@ FROM
     having (count(film_id)) > 15;
     
     
+
+      -- 32:  Para cada categoría (por nombre), cuenta cuántas películas hay en esa categoría.
+
     -- 32:  Para cada categoría (por nombre), cuenta cuántas películas hay en esa categoría.
+
     
     SELECT 
     title AS titulo, COUNT(film_id), category_id AS categoria
@@ -483,7 +487,53 @@ FROM
     where dayofweek(rental_date) = 1 or dayofweek(rental_date) = 7
 GROUP BY customer_id , first_name , last_name;
 
+
 select *  from customer join rental using (customer_id) join payment using (rental_id) ; 
+
+
+
+select *  from customer join rental using (customer_id) join payment using (rental_id)  ;
+-- 42:  Para cada actor, muestra el total de títulos distintos en los que participa (equivale a COUNT DISTINCT, sin subconsulta).
+
+SELECT 
+   actor_id, first_name, last_name,  distinct_film, title 
+FROM
+    actor
+        JOIN
+    film_actor USING (actor_id)
+        JOIN
+    film USING (film_id)
+    group by actor_id, title;
+    
+    select
+    *
+    FROM
+    actor
+        JOIN
+    film_actor USING (actor_id)
+        JOIN
+    film USING (film_id);
+    
+    
+ 
+SELECT 
+    actor_id, 
+    first_name, 
+    last_name, 
+    COUNT(DISTINCT film_id) AS total_titulos
+FROM 
+    actor
+JOIN 
+    film_actor USING (actor_id)
+JOIN 
+    film USING (film_id)
+GROUP BY 
+    actor_id, 
+    first_name, 
+    last_name;
+    
+    
+    
 
 -- 43:  Para cada ciudad, cuenta cuántos clientes residen ahí (customer -> address -> city).
 
@@ -514,6 +564,52 @@ GROUP BY category_id;
 
 
 -- 45:  Para cada tienda, cuenta cuántas copias totales (inventario) tiene de películas en 2006.
+
+
+SELECT 
+    store_id, COUNT(film_id) AS total_peliculas
+FROM
+    store
+        JOIN
+    inventory USING (store_id)
+GROUP BY store_id;
+
+
+
+
+select *  from customer join rental using (customer_id) join payment using (rental_id) ;
+-- 42:  Para cada actor, muestra el total de títulos distintos en los que participa (equivale a COUNT DISTINCT, sin subconsulta).
+
+-- 43:  Para cada ciudad, cuenta cuántos clientes residen ahí (customer -> address -> city).
+
+
+SELECT 
+    city, COUNT(customer_id)
+FROM
+    customer
+        JOIN
+    address USING (address_id)
+        JOIN
+    city USING (city_id)
+GROUP BY city;
+
+
+-- 44:  Para cada categoría, muestra cuántos actores distintos participan en películas de esa categoría.
+
+
+SELECT 
+category_id, count(distinct actor_id)
+FROM
+    film_actor
+        JOIN
+    film USING (film_id)
+        JOIN
+    film_category USING (film_id)
+GROUP BY category_id;
+
+
+-- 45:  Para cada tienda, cuenta cuántas copias totales (inventario) tiene de películas en 2006.
+
 
 
 SELECT 
@@ -699,4 +795,9 @@ select category_id, avg(length)from film_category join film using(film_id) where
 
 select * from film_category join film  using (film_id)
 
+
 -- 100:  Para cada categoría, calcula la media de duración (length) de películas alquiladas en 2006 y ordénalas descendentemente por d
+
+-- 100:  Para cada categoría, calcula la media de duración (length) de películas alquiladas en 2006 y ordénalas descendentemente por d
+
+
